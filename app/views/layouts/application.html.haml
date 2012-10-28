@@ -1,0 +1,60 @@
+!!!
+%html{:lang => 'ru'}
+  %head
+    = javascript_include_tag :application
+    %meta{:charset => "utf-8"}
+    %title= content_for?(:title) ? yield(:title) : "UWC 1+"
+    = csrf_meta_tags
+    = stylesheet_link_tag "application", :media => "all"
+  %body
+    .navbar
+      .navbar-inner
+        .container-fluid
+          .row-fluid
+            %h1
+              = yield :title
+
+
+    .container-fluid
+      .row-fluid
+        .span9
+          .well
+            %h4
+              - if flash[:success]
+                #notice.message.text-success
+                  = flash[:success]
+                  = flash[:notice]
+              - if flash[:error] or flash[:alert]
+                #error.message.text-error.underlined
+                  = flash[:error]
+                  = flash[:alert]
+              - elsif flash[:warning]
+                #warning.message= flash[:warning]
+
+            %div
+              = yield
+
+
+        .span3
+          .well
+            %div
+              - if current_user
+                Logged in as #{current_user.email}.
+                %br
+                = link_to "Log out", signout_path
+              - else
+                = link_to "Register", register_path
+                or
+                = link_to "Log in", signin_path
+
+
+
+
+      .row-fluid
+        %br
+        %br
+        %br
+        %br
+        - if Rails.env.development?
+          %pre= debug(params)
+          %pre= session.to_yaml unless session.nil?

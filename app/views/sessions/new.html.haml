@@ -1,0 +1,11 @@
+- content_for :title do
+  Log in
+
+= form_tag sessions_path, :method => :post do
+  %div
+    = label :email, 'email'
+    = text_field_tag :email
+  %div
+    = label :password, 'password'
+    = password_field_tag :password
+  = submit_tag 'Register'

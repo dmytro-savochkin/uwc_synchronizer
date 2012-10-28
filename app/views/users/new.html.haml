@@ -1,0 +1,7 @@
+- content_for :title do
+  User registration
+
+= simple_form_for @user, :url => users_path, :method => :post do |f|
+  = f.input :email
+  = f.input :password, :as => 'password'
+  = f.submit 'Register'
