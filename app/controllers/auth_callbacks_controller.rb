@@ -1,34 +1,38 @@
 # encoding: utf-8
 class AuthCallbacksController < ApplicationController
-  require "omniauth-facebook"
-  #require "omniauth-google-oauth2"
-  require "omniauth-vkontakte"
-  require "omniauth-twitter"
-  require "omniauth-linkedin"
-
-  include ClientLoginMethods
+  #include Social
 
 
 
   def callback
     auth_data = request.env["omniauth.auth"]
-    provider = auth_data.provider
-    social_network_class = SocialNetwork.factory provider
+    oauth_provider = auth_data.provider
+    oauth_provider_class = factory(oauth_provider)
+    oauth_instance = oauth_provider_class.create_oauth(auth_data, current_user)
+    if oauth_instance
+
+      logger.info oauth_provider_class
+      logger.info oauth_provider_class < Social::Cloud
+      logger.info current_user.preferred_cloud
+      logger.info current_user.preferred_cloud.nil?
+      if oauth_provider_class < Social::Cloud and current_user.preferred_cloud.nil?
+        logger.info "131231231231313"
+        current_user.preferred_cloud = oauth_instance
+      end
 
 
-    if social_network_class.create_oauth(provider, auth_data, current_user)
       flash[:success] = auth_data.provider + ' was linked with your account.'
-      #@a = auth_data
-      #render 'sync/index'
       redirect_to sync_path
     else
-      flash[:error] = 'This ' + auth_data.provider + ' account is already taken by someone.'
+      flash[:error] = 'This ' + auth_data.provider.to_s + ' account is already taken by someone.'
       redirect_to sync_path
     end
   end
 
 
-
+  def failure
+    redirect_to root_url, :alert => "Authentication error: #{params[:message].humanize}"
+  end
 
 
 

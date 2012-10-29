@@ -1,7 +1,9 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
-  has_many :clouds
-  has_many :social_networks
+  has_many :clouds, :class_name => Social::Cloud, :foreign_key => :user_id
+  has_one :preferred_cloud, :class_name => Social::Cloud, :foreign_key => :primary_for
+
+  has_many :social_networks, :class_name => Social::Network
 
 
   attr_accessible :email, :password
@@ -34,19 +36,42 @@ class User < ActiveRecord::Base
 
 
 
-  def social_networks_in
+
+
+
+
+  def social_networks_available
+    Social::Network.kids - social_networks_as_strings
+  end
+
+  def clouds_available
+    Social::Cloud.kids - clouds_as_strings
+  end
+
+  def all_updatable_networks_without(network_class_name)
+    network_class = Social::Network.factory network_class_name
+    self.
+        social_networks.
+        select(&:profile_updatable).
+        reject{|n| n.class.name.to_s == network_class.to_s}
+  end
+
+
+
+
+
+
+
+
+
+
+  private
+
+  def social_networks_as_strings
     self.social_networks.map(&:provider)
   end
-  def social_networks_available
-    SocialNetwork.kids - social_networks_in
-  end
 
-
-  def clouds_in
+  def clouds_as_strings
     self.clouds.map(&:provider)
   end
-  def clouds_available
-    Cloud.providers - clouds_in
-  end
-
 end

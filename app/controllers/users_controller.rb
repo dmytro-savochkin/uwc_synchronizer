@@ -3,6 +3,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+
   def create
     @user = User.create params[:user]
 
@@ -17,4 +18,16 @@ class UsersController < ApplicationController
   end
 
 
+  def update_preferred_cloud
+    logger.info current_user.to_yaml
+    if current_user.nil?
+      flash[:error] = 'We cannot change preferred cloud because you are not logged in'
+      redirect_to root_path
+    else
+      user = User.find current_user[:id]
+      user.preferred_cloud = Social::Cloud.find params[:preferred_cloud]
+      user.save
+      redirect_to root_path
+    end
+  end
 end

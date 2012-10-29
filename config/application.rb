@@ -12,11 +12,14 @@ end
 module Uwcplus
   class Application < Rails::Application
 
-    FACEBOOK_API = {:token => "215305611933443", :secret => "bcfdaf538074b74a1cc3f4728a297b42"}
+    FACEBOOK_API = {:token => "215305611933443", :secret => "0e6c8039f9fdccad79f8cd4872af052f"}
     LINKEDIN_API = {:token => "if1e5eo991ru", :secret => "eZKIBNnmoDhMUTXt"}
     VKONTAKTE_API = {:token => "3175222", :secret => "8XHtp6aIrcdlEEGbxzdL"}
     TWITTER_API = {:token => "NEyPya21yA9Cj36YAlXNg", :secret => "Lt0ciRDxMFqnqEgm4bH7P8yXdU7awF8z5OU1uVvAGl4"}
+    GITHUB_API = {:token => "469b0707e99cb1be93cd", :secret => "c8d17a473d42d1c438235179fb5c77869d00322c"}
 
+    DROPBOX_API = {:token => "ou771rjh0ytd16h", :secret => "9apfd0pe1ol9zgk"}
+    GOOGLE_API = {:token => "227399176915.apps.googleusercontent.com", :secret => "RFgLzcV0avVJfiEELAvcuDsI"}
 
 
 

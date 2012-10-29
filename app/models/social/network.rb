@@ -1,4 +1,4 @@
-class SocialNetwork < ActiveRecord::Base
+class Social::Network < ActiveRecord::Base
   self.inheritance_column = :provider
 
   belongs_to :user
@@ -8,31 +8,22 @@ class SocialNetwork < ActiveRecord::Base
                   :token, :secret
 
 
-  #def self.email_from_auth_data(auth)
-    #email = auth.info.email if provider == "google_oauth2"
-  #end
-
-
 
   def self.kids
-    %w(FacebookNetwork VkontakteNetwork TwitterNetwork LinkedinNetwork)
-  end
-
-
-  def self.factory(provider)
-    class_name_from_provider(provider).constantize
-  end
-
-  def self.class_name_from_provider(provider)
-    provider.capitalize + 'Network'
+    %w(Social::Facebook Social::Twitter Social::Linkedin Social::Github)
   end
 
 
 
 
 
-  def self.create_oauth(provider, auth, current_user)
-    provider = self.class_name_from_provider(provider)
+
+
+
+
+
+  def self.create_oauth(auth, current_user)
+    provider = self.to_s
     email = self.email_from_auth_data(auth)
     network = self.where(:provider => provider, :email => email).first
     image = auth.info.image || ""
@@ -51,5 +42,17 @@ class SocialNetwork < ActiveRecord::Base
           secret: auth.credentials.secret
       )
     end
+  end
+
+
+
+
+
+  def human_name
+    ''
+  end
+
+  def class_name_without_module
+    self.class.name.to_s.split('::').last || ''
   end
 end

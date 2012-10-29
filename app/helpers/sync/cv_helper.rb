@@ -1,0 +1,2 @@
+module Sync::CvHelper
+end

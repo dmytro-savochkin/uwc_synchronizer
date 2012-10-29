@@ -1,0 +1,40 @@
+- content_for :title do
+  Profile synchronization
+
+
+%div= link_to 'back', root_path
+
+%h3 Synchronize your profile info
+
+%div
+  %table.table-hover.table
+    %thead
+      %tr
+        %th Network
+        %th Name
+        %th Description
+        %th URL
+        %th Location
+        %th set as main
+
+    - @user.social_networks.select(&:profile_editable).each do |network|
+      - profile = network.get_info
+      %tr{:class => (network.profile_updatable ? 'success' : 'warning')}
+        %td
+          %strong= provider_from_class_name(network.class.to_s).capitalize
+        %td= profile[:name]
+        %td= profile[:description]
+        %td= profile[:url]
+        %td= profile[:location]
+        %td
+          = link_to 'set this data', sync_update_profile_path(:profile => profile), :method => :put, :class => 'btn'
+
+
+
+  %ul
+    %li
+      %span.text-success Green
+      color - networks which will be updated
+    %li
+      %span.text-warning Yellow
+      color - networks which won't be updated (API doesn't allow making PUT calls)

@@ -7,4 +7,13 @@
 
 td {
     vertical-align: top;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+.preferred_cloud_form select {
+    width: 150px;
 }

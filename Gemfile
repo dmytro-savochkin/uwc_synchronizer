@@ -30,20 +30,22 @@ gem 'jquery-rails'
 
 #gem 'devise'
 gem 'omniauth'
-gem 'oauth2'
+#gem 'oauth2'
 
 gem 'omniauth-facebook'
-gem 'omniauth-vkontakte'
 gem 'omniauth-twitter'
 gem 'omniauth-linkedin'
+gem 'omniauth-github'
 
+gem 'omniauth-google-oauth2'
 gem 'omniauth-dropbox'
 
 
 
 gem 'twitter'
 gem 'koala'
+gem "github_api"
 gem 'linkedin'
-gem 'vkontakte'
 
+gem 'google_drive'
 

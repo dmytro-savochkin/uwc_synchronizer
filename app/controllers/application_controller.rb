@@ -10,8 +10,20 @@ class ApplicationController < ActionController::Base
 
 
 
+  protected
+
+  def factory(provider)
+    self.class_name_from_provider(provider).constantize
+  end
+
+  def class_name_from_provider(provider)
+    'Social::' + provider.camelize
+  end
+
+
 
   private
+
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
