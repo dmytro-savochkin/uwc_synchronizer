@@ -40,14 +40,19 @@ class Social::Linkedin < Social::Network
     }
   end
 
-
-  def get_positions
-    client = auth
-    client.profile(:fields => %w(positions))
+  def put_info(params)
+    false
   end
 
 
-  def put_info(params)
-    false
+
+
+
+  def get_cv_data
+    client = auth
+    cv_data = client.profile(
+        :fields => %w(positions specialties summary industry location headline formatted-name)
+    )
+    cv_data.to_json
   end
 end

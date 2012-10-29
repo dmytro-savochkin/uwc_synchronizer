@@ -4,7 +4,7 @@ class Social::Cloud < ActiveRecord::Base
   belongs_to :user, :primary_key => :user_id
   belongs_to :user, :primary_key => :primary_for
 
-  attr_accessible :provider, :email, :user_id, :token, :secret
+  attr_accessible :provider, :email, :user_id, :token, :secret, :refresh_token, :expires_at
 
   def self.kids
     %w(Social::Dropbox Social::GoogleOauth2)
@@ -26,7 +26,9 @@ class Social::Cloud < ActiveRecord::Base
           email: auth.info.email,
           user_id: current_user.id,
           token: auth.credentials.token,
-          secret: auth.credentials.secret
+          secret: auth.credentials.secret,
+          refresh_token: auth.credentials.refresh_token,
+          expires_at:auth.credentials.expires_at
       )
     end
   end

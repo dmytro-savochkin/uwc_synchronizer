@@ -19,14 +19,12 @@ class UsersController < ApplicationController
 
 
   def update_preferred_cloud
-    logger.info current_user.to_yaml
     if current_user.nil?
       flash[:error] = 'We cannot change preferred cloud because you are not logged in'
       redirect_to root_path
     else
-      user = User.find current_user[:id]
-      user.preferred_cloud = Social::Cloud.find params[:preferred_cloud]
-      user.save
+      current_user.preferred_cloud = Social::Cloud.find params[:preferred_cloud]
+      current_user.save
       redirect_to root_path
     end
   end

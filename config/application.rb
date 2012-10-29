@@ -19,7 +19,7 @@ module Uwcplus
     GITHUB_API = {:token => "469b0707e99cb1be93cd", :secret => "c8d17a473d42d1c438235179fb5c77869d00322c"}
 
     DROPBOX_API = {:token => "ou771rjh0ytd16h", :secret => "9apfd0pe1ol9zgk"}
-    GOOGLE_API = {:token => "227399176915.apps.googleusercontent.com", :secret => "RFgLzcV0avVJfiEELAvcuDsI"}
+    GOOGLE_API = {:token => "227399176915.apps.googleusercontent.com", :secret => "ypw_Fx0x8DTFVcPPYyEBz0X-"}
 
 
 

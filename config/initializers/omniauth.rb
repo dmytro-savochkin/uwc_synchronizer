@@ -10,7 +10,10 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :github, Uwcplus::Application::GITHUB_API[:token], Uwcplus::Application::GITHUB_API[:secret], :scope => 'user'
 
   provider :dropbox, Uwcplus::Application::DROPBOX_API[:token], Uwcplus::Application::DROPBOX_API[:secret]
-  provider :google_oauth2, Uwcplus::Application::GOOGLE_API[:token], Uwcplus::Application::GOOGLE_API[:secret]
+  provider :google_oauth2, Uwcplus::Application::GOOGLE_API[:token], Uwcplus::Application::GOOGLE_API[:secret],
+           :scope => "https://docs.google.com/feeds/,https://docs.googleusercontent.com/,https://spreadsheets.google.com/feeds/,userinfo.profile,userinfo.email",
+           :access_type => 'offline',
+           :approval_prompt => 'force'
 end
 
 OmniAuth.config.on_failure = Proc.new { |env|

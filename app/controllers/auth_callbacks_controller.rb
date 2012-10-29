@@ -10,16 +10,11 @@ class AuthCallbacksController < ApplicationController
     oauth_provider_class = factory(oauth_provider)
     oauth_instance = oauth_provider_class.create_oauth(auth_data, current_user)
     if oauth_instance
-
-      logger.info oauth_provider_class
-      logger.info oauth_provider_class < Social::Cloud
-      logger.info current_user.preferred_cloud
-      logger.info current_user.preferred_cloud.nil?
       if oauth_provider_class < Social::Cloud and current_user.preferred_cloud.nil?
-        logger.info "131231231231313"
         current_user.preferred_cloud = oauth_instance
       end
 
+      logger.info auth_data
 
       flash[:success] = auth_data.provider + ' was linked with your account.'
       redirect_to sync_path

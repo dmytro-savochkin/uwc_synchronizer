@@ -11,19 +11,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121028230057) do
+ActiveRecord::Schema.define(:version => 20121029153535) do
 
   create_table "clouds", :force => true do |t|
     t.integer  "user_id"
     t.string   "email"
-    t.string   "picture_path"
-    t.string   "cv_path"
+    t.string   "picture_file_name"
+    t.string   "cv_file_name"
     t.string   "provider"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.string   "token"
     t.string   "secret"
     t.integer  "primary_for"
+    t.string   "expires_at"
+    t.string   "refresh_token"
   end
 
   create_table "networks", :force => true do |t|

@@ -32,7 +32,7 @@
         %div.clouds
           %h2 Clouds.
           You have #{@user.clouds.count} linked clouds
-          %strong #{@user.clouds.map{|c| c.human_name.capitalize}.join(', ')}.
+          %strong #{@user.clouds.map{|c| c.human_name}.join(', ')}.
           - if @user.clouds.count >= 1
             %div.preferred_cloud_form
               Your preferred cloud:

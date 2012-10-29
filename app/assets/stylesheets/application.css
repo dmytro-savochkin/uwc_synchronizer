@@ -17,3 +17,7 @@ table {
 .preferred_cloud_form select {
     width: 150px;
 }
+
+.cv_file_name input {
+    width: 80px;
+}
