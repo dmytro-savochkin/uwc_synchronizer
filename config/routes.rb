@@ -18,8 +18,8 @@ Uwcplus::Application.routes.draw do
 
 
 
-    match 'show_cv' => 'cv#show'
-    match 'upload_cv' => 'cv#upload'
+    match 'show_gists' => 'gist#show'
+    match 'upload_gist' => 'gist#upload'
 
     #resources :avatar, :only => %w(edit update)
   end

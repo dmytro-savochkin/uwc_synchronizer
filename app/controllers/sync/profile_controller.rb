@@ -7,7 +7,7 @@ class Sync::ProfileController < ApplicationController
   def update
     profile_params = params[:profile]
     @user = current_user
-    networks_to_update = @user.all_updatable_networks_without(profile_params[:provider])
+    networks_to_update = @user.all_updatable_networks_without(factory(profile_params[:provider]))
     all_updated = networks_to_update.each {|n| n.put_info profile_params}
     if all_updated.any?
       flash[:success] =

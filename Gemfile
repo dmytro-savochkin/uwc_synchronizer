@@ -25,7 +25,7 @@ gem 'simple_form'
 gem 'haml'
 gem 'jquery-rails'
 
-
+gem 'httpclient'
 
 
 #gem 'devise'
@@ -48,4 +48,5 @@ gem "github_api"
 gem 'linkedin'
 
 gem 'google_drive'
+gem 'dropbox-api'
 

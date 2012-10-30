@@ -2,29 +2,35 @@ class Social::GoogleOauth2 < Social::Cloud
   def human_name
     'Google Drive'
   end
-  def cv_folder
-    'cv'
+  def gists_folder
+    'gists'
   end
 
 
 
-  def get_cv_data
-    return '' if cv_file_name.nil?
+
+
+  def get_gists_data
+    return {} if cv_file_name.nil?
     session = auth
-    folder = session.collection_by_title(cv_folder)
-    return '' if folder.nil?
-    file = folder.files("title" => cv_file_name, "title-exact" => true).first
-    file.download_to_string unless file.nil?
+    folder = session.collection_by_title(gists_folder)
+    return {} if folder.nil?
+    folder_files = folder.files("title" => cv_file_name, "title-exact" => true, "showdeleted" => false)
+    file = folder_files.first
 
-  #rescue Exception
-
+    if file
+      {data: file.download_to_string, url: file.human_url}
+    else
+      {}
+    end
   end
-  def post_cv(data)
+
+  def post_gists(data)
     return false if cv_file_name.nil? or cv_file_name.empty?
     session = auth
     file = session.upload_from_string(data, title = cv_file_name, :content_type => "text/plain", :convert => false)
     root = session.root_collection
-    folder = root.create_subcollection(cv_folder)
+    folder = root.create_subcollection(gists_folder)
     folder.add(file)
     root.remove(file)
   end
@@ -49,13 +55,14 @@ class Social::GoogleOauth2 < Social::Cloud
           client,
           {:refresh_token => refresh_token, :expires_at => expires_at}
       )
-      logger.info access_token.to_yaml
       access_token = access_token.refresh!
-      logger.info access_token.to_yaml
+
+      self.token = access_token.token
+      self.expires_at = access_token.expires_at
+      self.save
     else
       access_token = OAuth2::AccessToken.new(client, token)
     end
-
 
     GoogleDrive.login_with_oauth(access_token)
   end

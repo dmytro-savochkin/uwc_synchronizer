@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     else
       current_user.preferred_cloud = Social::Cloud.find params[:preferred_cloud]
       current_user.save
-      redirect_to root_path
+      redirect_to env['HTTP_REFERER']
     end
   end
 end

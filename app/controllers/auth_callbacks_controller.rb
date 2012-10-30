@@ -13,9 +13,6 @@ class AuthCallbacksController < ApplicationController
       if oauth_provider_class < Social::Cloud and current_user.preferred_cloud.nil?
         current_user.preferred_cloud = oauth_instance
       end
-
-      logger.info auth_data
-
       flash[:success] = auth_data.provider + ' was linked with your account.'
       redirect_to sync_path
     else

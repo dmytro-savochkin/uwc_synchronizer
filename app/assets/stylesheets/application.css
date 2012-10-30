@@ -15,9 +15,24 @@ table {
 }
 
 .preferred_cloud_form select {
-    width: 150px;
+    width: 130px;
 }
 
 .cv_file_name input {
     width: 80px;
+}
+
+.delimiter {
+    height: 50px;
+    min-height: 50px;
+}
+
+
+
+.gist-files textarea {
+    height:100px;
+}
+
+.btn-container {
+    text-align: center;
 }

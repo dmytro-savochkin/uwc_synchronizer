@@ -32,4 +32,27 @@ class Social::Cloud < ActiveRecord::Base
       )
     end
   end
+
+
+
+
+
+
+
+
+  def parse_gists_data_from_string(string)
+    [
+        {
+            :description => '',
+            :files => ''
+        },
+        {
+            :description => '',
+            :files => ''
+        }
+    ]
+  end
+
+
+
 end

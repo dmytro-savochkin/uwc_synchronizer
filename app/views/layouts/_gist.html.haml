@@ -1,0 +1,22 @@
+- gist_field_name_prefix = 'gists[' + gist_id + '][' + storage + ']'
+- gist_field_id_prefix = ['gists', gist_id, storage].join('_')
+
+%div.gist
+  %div
+    = label_tag gist_field_id_prefix + '_description', 'gist description'
+    = text_field_tag gist_field_name_prefix + '[description]', gist[:description]
+
+    = hidden_field_tag gist_field_name_prefix + '[id]', gist_id
+
+  %br
+
+  %div.gist-files
+    %div
+    - gist[:files].each do |gist_file|
+      - file_id = gist_field_id_prefix + '_files_' + gist_file[:filename]
+
+      %div
+        = label_tag file_id, gist_file[:filename] + ' ' + gist_file[:language].to_s
+
+      = text_area_tag gist_field_name_prefix + '[files]['+gist_file[:filename]+']', gist_file[:contents], :class => 'span4'
+

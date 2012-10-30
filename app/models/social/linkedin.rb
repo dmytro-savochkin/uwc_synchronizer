@@ -18,14 +18,7 @@ class Social::Linkedin < Social::Network
 
 
 
-  def auth
-    client = LinkedIn::Client.new(
-        Uwcplus::Application::LINKEDIN_API[:token],
-        Uwcplus::Application::LINKEDIN_API[:secret]
-    )
-    client.authorize_from_access(token, secret)
-    client
-  end
+
 
 
   def get_info
@@ -47,12 +40,14 @@ class Social::Linkedin < Social::Network
 
 
 
+  private
 
-  def get_cv_data
-    client = auth
-    cv_data = client.profile(
-        :fields => %w(positions specialties summary industry location headline formatted-name)
+  def auth
+    client = LinkedIn::Client.new(
+        Uwcplus::Application::LINKEDIN_API[:token],
+        Uwcplus::Application::LINKEDIN_API[:secret]
     )
-    cv_data.to_json
+    client.authorize_from_access(token, secret)
+    client
   end
 end

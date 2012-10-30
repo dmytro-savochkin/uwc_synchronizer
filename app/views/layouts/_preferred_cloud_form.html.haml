@@ -1,0 +1,4 @@
+= form_tag update_preferred_cloud_path, :method => :put do
+  = select_tag :preferred_cloud,
+    options_for_select(@user.clouds.map{|c| [c.human_name, c.id]}, @user.preferred_cloud.id)
+  = submit_tag 'update'

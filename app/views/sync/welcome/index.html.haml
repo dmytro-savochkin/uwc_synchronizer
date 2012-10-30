@@ -8,11 +8,16 @@
 
 
 - else
+
   .container-fluid
+    .row-fluid
+      .span12
+        %h2 First step &ndash; connect your accounts
+
     .row-fluid
       .span6
         %div.social_networks
-          %h2 Social networks.
+          %h4 Social networks.
           You have #{@user.social_networks.count} linked social networks
           %strong #{@user.social_networks.map{|n| n.human_name}.join(', ')}.
 
@@ -30,20 +35,11 @@
 
       .span6
         %div.clouds
-          %h2 Clouds.
+          %h4 Clouds.
           You have #{@user.clouds.count} linked clouds
           %strong #{@user.clouds.map{|c| c.human_name}.join(', ')}.
-          - if @user.clouds.count >= 1
-            %div.preferred_cloud_form
-              Your preferred cloud:
-              = form_tag update_preferred_cloud_path, :method => :put do
-                = select_tag :preferred_cloud,
-                  options_for_select(@user.clouds.map{|c| [c.human_name, c.id]}, @user.preferred_cloud.id)
-                = submit_tag 'update'
-
           - if @user.clouds_available.count > 0
             %div
-              %br
               Link these clouds:
               %div
                 %ul
@@ -52,19 +48,41 @@
                     %li
                       = link_to cloud_name.capitalize, '/auth/' + cloud_name
 
-  %h3 You may:
-  %ol
-    %li
-      = link_to 'synchronize your avatar', '1'
-    %li
-      - if @user.preferred_cloud and @user.social_networks.map(&:class).include? Social::Linkedin
-        = link_to 'download your CV to the cloud', sync_show_cv_path
-      - else
-        to download your CV to the cloud you should have linked Linkedin and some cloud system
-    %li
-      - if @user.social_networks.count >= 2 and  @user.social_networks.select(&:profile_updatable).count >= 1
-        = link_to 'synchronize your profile data', sync_edit_profile_path
-      - else
-        to synchronize your profile data you have to link at least 1 API-updatable
-        social network (Twitter, Github) to your account and
-        total amount of linked networks should be at least 2
+
+
+
+
+    .delimiter
+
+
+
+
+
+    .row-fluid
+      .span12
+        %h2 Second step &ndash; sync it all
+
+        %table.table-hover.table
+          %thead
+            %tr
+              %th Avatar <-> clouds
+              %th Github <-> clouds
+              %th Networks <-> networks
+          %tbody
+            %tr
+              %td.span4
+                = link_to 'Sync your avatar with social networks.', '1'
+
+              %td.span4
+                - if @user.preferred_cloud and @user.social_networks.map(&:class).include? Social::Github
+                  = link_to 'Sync your github gists with clouds.', sync_show_gists_path
+                - else
+                  To download your gists to the cloud you should have linked Github and some cloud system.
+              %td.span4
+                - if @user.social_networks.count >= 2 and  @user.social_networks.select(&:profile_updatable).count >= 1
+                  = link_to 'Sync your profile data.', sync_edit_profile_path
+                - else
+                  To sync your profile data you have to link at least 1 API-updatable
+                  social network (Twitter, Github) to your account and
+                  total amount of linked networks should be at least 2.
+

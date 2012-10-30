@@ -41,6 +41,37 @@ class Social::Github < Social::Network
 
 
 
+
+  def get_gists_data
+    httpclient = HTTPClient.new
+    github = Github.new :oauth_token => token
+    gists = {}
+    github.gists.list.map do |gist|
+      gists[gist.id] = {
+          :id => gists[gist.id],
+          :description => gist.description,
+          :files => gist.files.map do |file|
+            {
+                :filename => file.last.filename,
+                :language => file.last.language,
+                :contents => httpclient.get_content(file.last.raw_url).to_s
+            }
+          end
+      }
+    end
+    gists
+  end
+
+
+  def put_gists_data(gists)
+    logger.info gists.to_yaml
+  end
+
+
+
+
+
+
   private
 
   def convert_data_to_github_format(data)

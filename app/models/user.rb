@@ -48,8 +48,7 @@ class User < ActiveRecord::Base
     Social::Cloud.kids - clouds_as_strings
   end
 
-  def all_updatable_networks_without(network_class_name)
-    network_class = Social::Network.factory network_class_name
+  def all_updatable_networks_without(network_class)
     self.
         social_networks.
         select(&:profile_updatable).

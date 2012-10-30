@@ -39,11 +39,14 @@
           .well
             %div
               - if current_user
-                Logged in as #{current_user.email}.
-                %br
                 = link_to "Log out", signout_path
-
-
+                (#{current_user.email}).
+                %br
+                - if current_user.clouds.count >= 1
+                  %br
+                  %div Your preferred cloud:
+                  %div.preferred_cloud_form
+                    = render 'layouts/preferred_cloud_form'
 
 
 
