@@ -5,7 +5,9 @@ class Social::Dropbox < Social::Cloud
   def gists_folder
     'SocialSync/gists'
   end
-
+  def gists_file
+    'data.json'
+  end
 
 
 
@@ -13,22 +15,21 @@ class Social::Dropbox < Social::Cloud
 
   def get_gists_data
     client = auth
-    begin
-      gists = {}
+    gists = {}
 
-      gist_files = client.ls gists_folder
-      gist_files.each do |file|
-        begin
-          gist_data = JSON.parse(file.download, :symbolize_names => true)
-          gists[gist_data[:id].to_s] = gist_data
-        rescue JSON::ParserError
-          nil
-        end
+    gist_files = client.ls gists_folder
+    gist_files.each do |file|
+      begin
+        gist_data = JSON.parse(file.download, :symbolize_names => true)
+        gists[gist_data[:id].to_s] = gist_data
+      rescue JSON::ParserError
+        nil
       end
-      gists
-    rescue Dropbox::API::Error::NotFound
-      {}
     end
+
+    gists
+  rescue Dropbox::API::Error::NotFound
+    {}
   end
 
   def put_gists_data(gists)
@@ -45,13 +46,13 @@ class Social::Dropbox < Social::Cloud
     end
   end
 
-  def delete_gists(old_ids)
+  def delete_gists(ids)
     client = auth
 
-    old_ids.each do |old_id|
+    ids.each do |id|
       begin
-        old_file = client.find gists_folder + '/' + old_id + '.txt'
-        old_file.destroy
+        file = client.find gists_folder + '/' + id + '.txt'
+        file.destroy
       rescue Dropbox::API::Error::NotFound
         nil
       end
