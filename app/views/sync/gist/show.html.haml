@@ -4,54 +4,55 @@
 
 %div= link_to 'back', root_path
 
-%h3 Sync your Github gists into #{@user.preferred_cloud.human_name}
+%h3 Sync your Github gists into #{@user.preferred_cloud.human_name} and back
+
+Please specify from which source would you like to get gists data to be synced
+with #{@user.preferred_cloud.human_name} and Github.
 
 %div
-  - if @gists[:github] != @gists[:cloud]
-    %table.table-hover.table
-      %thead
+  %table.table
+    %thead
+      %tr.centered
+        %th.span2
+          ignore
+          %br
+          this gist
+        %th.span5
+          sync it
+          %br
+          from #{@user.preferred_cloud.human_name}
+        %th.span5
+          sync it
+          %br
+          from Github
+
+    %tbody
+
+      = form_tag sync_upload_gist_path, :method => :post do
+        - @gists.each do |gist_id, gist|
+          - github_gist = gist[:github]
+          - cloud_gist = gist[:cloud]
+          - equal = are_equal? github_gist, cloud_gist
+
+          - gist_radio_button_name = gist_radio_button_name(gist_id)
+
+          %tr{:class => (equal ? 'success' : 'warning')}
+            %td
+              %div.btn-container= radio_button_tag gist_radio_button_name, 'disabled', true
+            %td
+              - unless cloud_gist.nil?
+                %div.btn-container= radio_button_tag gist_radio_button_name, 'cloud'
+                = render 'layouts/gist', :gist => cloud_gist, :gist_id => gist_id, :storage => 'cloud'
+            %td
+              - unless github_gist.nil?
+                %div.btn-container
+                  = radio_button_tag gist_radio_button_name, 'github'
+                = render 'layouts/gist', :gist => github_gist, :gist_id => gist_id, :storage => 'github'
+
+
         %tr
-          %th disabled
-          %th on #{@user.preferred_cloud.human_name}
-          %th on Github
-
-
-      %tbody
-        = form_tag sync_upload_gist_path, :method => :post do
-
-          - @gists[:github].each do |gist_id, gist|
-            - gist_name = 'gists[' + gist_id + ']'
-            - gist_radio_button_name = gist_name + '[sync]'
-            %tr
-              %td.span2
-                = radio_button_tag gist_radio_button_name, 'disabled', true
-              %td.span5
-                - unless @gists[:cloud][gist_id].nil?
-                  = render 'layouts/gist', :gist => @gists[:cloud][gist_id], :gist_id => gist_id, :storage => 'cloud'
-                  %div.btn-container
-                    = radio_button_tag gist_radio_button_name, 'cloud', true
-                  - @gists[:cloud].delete(gist_id)
-              %td.span5
-                %div.btn-container
-                  = radio_button_tag gist_radio_button_name, 'github', true
-                = render 'layouts/gist', :gist => gist, :gist_id => gist_id, :storage => 'github'
-
-
-
-          - @gists[:cloud].each do |gist_id, gist|
-            %tr
-              %td.span2
-                = radio_button_tag gist_radio_button_name, nil, true
-              %td.span5
-                = render 'layouts/gist', :gist => gist, :gist_id => gist_id, :storage => 'cloud'
-                %div.btn-container
-                  = radio_button_tag gist_radio_button_name, 'cloud', true
-              %td.span5
-
-
-          %tr
-            %td{:colspan => 3}
-              = submit_tag 'Sync!', :class => 'btn'
+          %td{:colspan => 3}
+            = submit_tag 'Sync!', :class => 'btn'
 
 
 
@@ -65,8 +66,8 @@
     -#    %div= hidden_field_tag :cv_data, @cv[:linkedin][:data]
     -#    %div= submit_tag 'Start!', :class => 'btn'
 
-  - else
-    %div It seems like your data is already synchronized with #{@user.preferred_cloud.human_name}!
+    -#- else
+    -#  %div It seems like your data is already synchronized with #{@user.preferred_cloud.human_name}!
     -#%div
     -#  Link:
     -#  = link_to @cv[:cloud][:url], @cv[:cloud][:url], :target => '_blank'

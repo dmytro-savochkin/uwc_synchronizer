@@ -19,37 +19,54 @@ class Social::Dropbox < Social::Cloud
       gist_files = client.ls gists_folder
       gist_files.each do |file|
         begin
-          gist_data = JSON.parse file.download
-          gists[gist_data[:id]] = gist_data
+          gist_data = JSON.parse(file.download, :symbolize_names => true)
+          gists[gist_data[:id].to_s] = gist_data
         rescue JSON::ParserError
           nil
         end
       end
-
       gists
     rescue Dropbox::API::Error::NotFound
       {}
     end
   end
 
-  def post_gists_data(data)
-    #return false if cv_file_name.nil? or cv_file_name.empty?
-    #client = auth
+  def put_gists_data(gists)
+    client = auth
+    begin
+      client.mkdir gists_folder
+    rescue Dropbox::API::Error::Forbidden
+      nil
+    end
 
+    gists.each do |gist|
+      gist_name = create_gist_name gist[:id]
+      client.upload(gists_folder + '/' + gist_name, gist.to_json)
+    end
+  end
 
-    ##begin
-    ##  client.find(cv_folder)
-    ##rescue Dropbox::API::Error::NotFound => e
-    ##  client.mkdir cv_folder
-    ##end
+  def delete_gists(old_ids)
+    client = auth
 
-    #client.upload(gists_folder + '/' + cv_file_name, data)
+    old_ids.each do |old_id|
+      begin
+        old_file = client.find gists_folder + '/' + old_id + '.txt'
+        old_file.destroy
+      rescue Dropbox::API::Error::NotFound
+        nil
+      end
+    end
   end
 
 
 
 
+
   private
+
+  def create_gist_name(id)
+    id.to_s + '.txt'
+  end
 
   def auth
     Dropbox::API::Client.new :token => token, :secret => secret

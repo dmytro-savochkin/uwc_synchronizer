@@ -6,17 +6,26 @@
     = label_tag gist_field_id_prefix + '_description', 'gist description'
     = text_field_tag gist_field_name_prefix + '[description]', gist[:description]
 
+    = hidden_field_tag gist_field_name_prefix + '[public]', gist[:public]
     = hidden_field_tag gist_field_name_prefix + '[id]', gist_id
 
   %br
 
   %div.gist-files
     %div
-    - gist[:files].each do |gist_file|
-      - file_id = gist_field_id_prefix + '_files_' + gist_file[:filename]
+
+    - gist_files = sort_gist_files gist[:files]
+
+    - gist_files.each_with_index do |gist_file, index|
+
+      - file_id = gist_field_id_prefix + '_files_' + gist_file[:filename].to_s
+      - file_field_name_prefix = gist_field_name_prefix + '[files][' + index.to_s + ']'
 
       %div
         = label_tag file_id, gist_file[:filename] + ' ' + gist_file[:language].to_s
 
-      = text_area_tag gist_field_name_prefix + '[files]['+gist_file[:filename]+']', gist_file[:contents], :class => 'span4'
+
+      = hidden_field_tag file_field_name_prefix + '[filename]', gist_file[:filename]
+      = hidden_field_tag file_field_name_prefix + '[language]', gist_file[:language]
+      = text_area_tag file_field_name_prefix + '[contents]', gist_file[:contents]
 
