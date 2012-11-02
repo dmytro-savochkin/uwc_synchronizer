@@ -15,7 +15,7 @@ table {
 }
 
 .preferred_cloud_form select {
-    width: 130px;
+    width: 110px;
 }
 
 .cv_file_name input {
@@ -35,4 +35,9 @@ table {
 
 .btn-container {
     text-align: center;
+}
+
+.textarea-error {
+    border-color: #B94A48;
+    background-color: rgba(246, 3, 8, 0.28);
 }

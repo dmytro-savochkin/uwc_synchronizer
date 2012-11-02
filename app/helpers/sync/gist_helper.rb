@@ -4,7 +4,7 @@ module Sync::GistHelper
   end
 
   def gist_radio_button_name(id)
-    gist_name_for_text_tag(id) + '[from]'
+    gist_name_for_text_tag(id) + '[action]'
   end
 
   def are_equal?(gist1, gist2)

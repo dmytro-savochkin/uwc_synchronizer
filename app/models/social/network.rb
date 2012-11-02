@@ -10,7 +10,7 @@ class Social::Network < ActiveRecord::Base
 
 
   def self.kids
-    %w(Social::Facebook Social::Twitter Social::Linkedin Social::Github)
+    %w(Social::Networks::Facebook Social::Networks::Twitter Social::Networks::Linkedin Social::Networks::Github)
   end
 
 

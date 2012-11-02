@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
   end
 
   def class_name_from_provider(provider)
-    'Social::' + provider.camelize
+    return 'Social::Networks::' + provider.camelize rescue NameError
+    'Social::Clouds::' + provider.camelize rescue NameError
   end
 
 

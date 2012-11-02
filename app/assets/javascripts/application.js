@@ -13,3 +13,42 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+
+
+
+$(function() {
+    $('.enable-radio-buttons').click(function(){
+        var radio_buttons_value = $(this).attr('id');
+        $(':radio[value=' + radio_buttons_value + ']').attr('checked', true);
+    });
+
+    $('.update-radio-button').focusin(function(){
+        var caller_button_id = $(this).attr('id');
+        var caller_button_id_array = caller_button_id.split('_');
+        var storage = caller_button_id_array[2];
+        var radio_button_id = caller_button_id_array[0] + '_' + caller_button_id_array[1] + '_action_' + storage;
+        $('#' + radio_button_id).attr('checked', true);
+    });
+
+    $('#sync-gists-button').click(function(){
+        textareas = $('textarea.update-radio-button');
+        var failed = false;
+
+        for(var i = 0; i < textareas.length; i++) {
+            var textarea = $(textareas[i])
+            if(textarea.val() == '') {
+                textarea.addClass('textarea-error');
+                failed = true;
+            }
+            else {
+                textarea.removeClass('textarea-error');
+            }
+        }
+
+        if (failed) {
+            alert("You can't set gist file contents empty.");
+            return false;
+        }
+    });
+});

@@ -7,7 +7,7 @@ class Social::Cloud < ActiveRecord::Base
   attr_accessible :provider, :email, :user_id, :token, :secret, :refresh_token, :expires_at
 
   def self.kids
-    %w(Social::Dropbox Social::GoogleOauth2)
+    %w(Social::Clouds::Dropbox Social::Clouds::GoogleOauth2)
   end
 
   def human_name
@@ -54,5 +54,9 @@ class Social::Cloud < ActiveRecord::Base
   end
 
 
+  protected
 
+  def create_gist_name(id)
+    id.to_s + '.txt'
+  end
 end

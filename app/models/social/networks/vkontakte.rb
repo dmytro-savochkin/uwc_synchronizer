@@ -1,4 +1,4 @@
-class Social::Vkontakte < Social::Network
+class Social::Networks::Vkontakte < Social::Network
   def human_name
     'Vk.com'
   end

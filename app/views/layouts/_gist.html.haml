@@ -4,7 +4,7 @@
 %div.gist
   %div
     = label_tag gist_field_id_prefix + '_description', 'gist description'
-    = text_field_tag gist_field_name_prefix + '[description]', gist[:description]
+    = text_field_tag gist_field_name_prefix + '[description]', gist[:description], :class => 'update-radio-button'
 
     = hidden_field_tag gist_field_name_prefix + '[public]', gist[:public]
     = hidden_field_tag gist_field_name_prefix + '[id]', gist_id
@@ -18,7 +18,7 @@
 
     - gist_files.each_with_index do |gist_file, index|
 
-      - file_id = gist_field_id_prefix + '_files_' + gist_file[:filename].to_s
+      - file_id = gist_field_id_prefix + '_contents_' + gist_file[:filename].to_s
       - file_field_name_prefix = gist_field_name_prefix + '[files][' + index.to_s + ']'
 
       %div
@@ -27,5 +27,5 @@
 
       = hidden_field_tag file_field_name_prefix + '[filename]', gist_file[:filename]
       = hidden_field_tag file_field_name_prefix + '[language]', gist_file[:language]
-      = text_area_tag file_field_name_prefix + '[contents]', gist_file[:contents]
+      = text_area_tag file_field_name_prefix + '[contents]', gist_file[:contents], :class => 'update-radio-button'
 

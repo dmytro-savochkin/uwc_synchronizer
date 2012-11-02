@@ -74,7 +74,7 @@
                 = link_to 'Sync your avatar with social networks.', '1'
 
               %td.span4
-                - if @user.preferred_cloud and @user.social_networks.map(&:class).include? Social::Github
+                - if @user.preferred_cloud and @user.social_networks.map(&:class).include? Social::Networks::Github
                   = link_to 'Sync your github gists with clouds.', sync_show_gists_path
                 - else
                   To download your gists to the cloud you should have linked Github and some cloud system.

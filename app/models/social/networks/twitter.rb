@@ -1,4 +1,4 @@
-class Social::Twitter < Social::Network
+class Social::Networks::Twitter < Social::Network
   def human_name
     'Twitter'
   end
@@ -39,11 +39,6 @@ class Social::Twitter < Social::Network
         :oauth_token => token,
         :oauth_token_secret => secret
     )
-
-    logger.info params.to_yaml
-
     client.update_profile(params.reject{|key, v| key.to_s == 'provider'})
-
-    #client.update_profile(:name => "Test Test")
   end
 end

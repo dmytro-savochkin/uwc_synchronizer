@@ -1,4 +1,4 @@
-class Social::Linkedin < Social::Network
+class Social::Networks::Linkedin < Social::Network
   def human_name
     'LinkedIn'
   end

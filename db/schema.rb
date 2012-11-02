@@ -11,13 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121029153535) do
+ActiveRecord::Schema.define(:version => 20121030155333) do
 
   create_table "clouds", :force => true do |t|
     t.integer  "user_id"
     t.string   "email"
     t.string   "picture_file_name"
-    t.string   "cv_file_name"
     t.string   "provider"
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false

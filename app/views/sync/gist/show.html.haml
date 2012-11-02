@@ -14,17 +14,30 @@ with #{@user.preferred_cloud.human_name} and Github.
     %thead
       %tr.centered
         %th.span2
-          ignore
+          exclude
           %br
-          this gist
-        %th.span5
+          from sync
+          %br
+          %button.btn.btn-mini.enable-radio-buttons#nothing choose all
+        %th.span4
           sync it
           %br
           from #{@user.preferred_cloud.human_name}
-        %th.span5
+          %br
+          %button.btn.btn-mini.enable-radio-buttons#cloud choose all
+        %th.span4
           sync it
           %br
           from Github
+          %br
+          %button.btn.btn-mini.enable-radio-buttons#github choose all
+        %th.span2
+          delete
+          %br
+          gist from
+          %br
+          everywhere
+
 
     %tbody
 
@@ -38,36 +51,22 @@ with #{@user.preferred_cloud.human_name} and Github.
 
           %tr{:class => (equal ? 'success' : 'warning')}
             %td
-              %div.btn-container= radio_button_tag gist_radio_button_name, 'disabled', true
+              %div.btn-container= radio_button_tag gist_radio_button_name, 'nothing', true
+
             %td
               - unless cloud_gist.nil?
                 %div.btn-container= radio_button_tag gist_radio_button_name, 'cloud'
                 = render 'layouts/gist', :gist => cloud_gist, :gist_id => gist_id, :storage => 'cloud'
+
             %td
               - unless github_gist.nil?
                 %div.btn-container
                   = radio_button_tag gist_radio_button_name, 'github'
                 = render 'layouts/gist', :gist => github_gist, :gist_id => gist_id, :storage => 'github'
 
+            %td
+              %div.btn-container= radio_button_tag gist_radio_button_name, 'delete'
 
         %tr
           %td{:colspan => 3}
-            = submit_tag 'Sync!', :class => 'btn'
-
-
-
-
-    -#%p So you can upload your data to:
-    -#%div.cv_file_name
-    -#  = form_tag sync_upload_gist_path, :method => :post do
-    -#    %div
-    -#      #{@user.preferred_cloud.human_name}/#{@user.preferred_cloud.gists_folder}/
-    -#      = text_field_tag :cv_file_name, @user.preferred_cloud.cv_file_name, :placeholder => 'file_name'
-    -#    %div= hidden_field_tag :cv_data, @cv[:linkedin][:data]
-    -#    %div= submit_tag 'Start!', :class => 'btn'
-
-    -#- else
-    -#  %div It seems like your data is already synchronized with #{@user.preferred_cloud.human_name}!
-    -#%div
-    -#  Link:
-    -#  = link_to @cv[:cloud][:url], @cv[:cloud][:url], :target => '_blank'
+            = submit_tag 'Sync!', :class => 'btn', :id => 'sync-gists-button'
