@@ -78,6 +78,8 @@ class Sync::GistController < ApplicationController
   end
 
   def fill_gists_instance(gists, storage)
+    logger.info storage
+    logger.info gists.to_yaml
     gists.each do |key, gist|
       @gists[gist[:id]] ||= {}
       @gists[gist[:id]][storage] = gist

@@ -11,10 +11,10 @@ class Social::Clouds::Dropbox < Social::Cloud
 
 
   def get_gists
-    client = auth
+    @client ||= auth
     gists = {}
 
-    gist_files = client.ls gists_folder
+    gist_files = @client.ls gists_folder
     gist_files.each do |file|
       begin
         gist_data = JSON.parse(file.download, :symbolize_names => true)
@@ -30,9 +30,9 @@ class Social::Clouds::Dropbox < Social::Cloud
   end
 
   def put_gists(gists)
-    client = auth
+    @client ||= auth
     begin
-      client.mkdir gists_folder
+      @client.mkdir gists_folder
     rescue Dropbox::API::Error::Forbidden
       nil
     end
@@ -41,18 +41,17 @@ class Social::Clouds::Dropbox < Social::Cloud
     gists.each do |gist|
       logger.info gist.to_yaml
       gist_name = create_gist_name gist[:id]
-      client.upload(gists_folder + '/' + gist_name, gist.to_json)
+      @client.upload(gists_folder + '/' + gist_name, gist.to_json)
     end
     logger.info 'DROPBOX'
   end
 
   def delete_gists(ids)
-    client = auth
+    @client ||= auth
 
     ids.each do |id|
       begin
-
-        file = client.find gists_folder + '/' + create_gist_name(id)
+        file = @client.find gists_folder + '/' + create_gist_name(id)
         file.destroy
       rescue Dropbox::API::Error::NotFound
         nil

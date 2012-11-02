@@ -18,7 +18,7 @@
 
     - gist_files.each_with_index do |gist_file, index|
 
-      - file_id = gist_field_id_prefix + '_contents_' + gist_file[:filename].to_s
+      - file_id = gist_field_id_prefix + '_files_' + index.to_s + '_contents'
       - file_field_name_prefix = gist_field_name_prefix + '[files][' + index.to_s + ']'
 
       %div

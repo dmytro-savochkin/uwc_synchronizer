@@ -48,11 +48,11 @@ class Social::Networks::Github < Social::Network
 
   def get_gists
     httpclient = HTTPClient.new
-    client = auth
+    @client ||= auth
     gists = {}
     threads = []
 
-    client.gists.list(:per_page => 50).map do |gist|
+    @client.gists.list(:per_page => 50).map do |gist|
       gists[gist.id] = {
           :id => gist.id,
           :description => gist.description,
@@ -61,8 +61,9 @@ class Social::Networks::Github < Social::Network
       }
 
       gist.files.each_with_index do |file, index|
+        gist_file_name = rename_gist_file_if_name_is_default file.last.filename
         gists[gist.id][:files][index] = {
-            :filename => file.last.filename,
+            :filename => gist_file_name,
             :language => (file.last.language.nil? ? '' : file.last.language)
         }
 
@@ -80,7 +81,7 @@ class Social::Networks::Github < Social::Network
 
 
   def put_gists(gists)
-    client = auth
+    @client ||= auth
 
     ids_to_change_in_cloud_query = {}
     threads = []
@@ -91,27 +92,55 @@ class Social::Networks::Github < Social::Network
       data_to_send[:public] = gist[:public]
       data_to_send[:files] = {}
       gist['files'].each do |key, file|
-        filename = file[:filename]
-        #filename = 'gistfile1.txt'  # TODO: need to avoid somehow github bug with creating gists
+        filename = rename_gist_file_if_name_is_default file[:filename]
         data_to_send[:files][filename] = {:content => file[:contents].to_s}
       end
 
-      logger.info gist.to_yaml
-      logger.info data_to_send.to_yaml
 
-      if gist[:recreate]
-        logger.info 'recreate!'
+
+      old_gist = @client.gists.get gist[:id] rescue Github::Error::NotFound
+
+      if old_gist
+        old_files = old_gist[:files].keys
+        new_files = gist['files'].values.map{|f| f[:filename]}
+        files_to_delete = old_files - new_files
+        logger.info 'old_gist'
+        logger.info old_files.to_yaml
+        logger.info new_files.to_yaml
+        logger.info files_to_delete.to_yaml
+
+        files_to_delete.each do |file_to_delete|
+          data_to_send[:files][file_to_delete] = 'null'
+        end
+
+        logger.info data_to_send.to_yaml
+
         threads << Thread.new do
-          client.gists.delete gist[:id] rescue Github::Error::NotFound
-          new_gist = client.gists.create data_to_send
-          ids_to_change_in_cloud_query[gist[:id]] = new_gist[:id]
+          @client.gists.edit gist[:id], data_to_send
         end
       else
+        logger.info 'new thread'
+        logger.info data_to_send.to_yaml
         threads << Thread.new do
-          client.gists.edit gist[:id], data_to_send
+          new_gist = @client.gists.create data_to_send
+          ids_to_change_in_cloud_query[gist[:id]] = new_gist[:id]
         end
       end
+
+      #if gist[:recreate]
+        #logger.info 'recreate!'
+        #threads << Thread.new do
+        #  client.gists.delete gist[:id] rescue Github::Error::NotFound
+        #  new_gist = client.gists.create data_to_send
+        #  ids_to_change_in_cloud_query[gist[:id]] = new_gist[:id]
+        #end
+      #else
+        #threads << Thread.new do
+        #  client.gists.edit gist[:id], data_to_send
+        #end
+      #end
     end
+
     logger.info 'GITHUB'
 
     threads.map{|t| t.value} # waiting for threads
@@ -121,11 +150,11 @@ class Social::Networks::Github < Social::Network
 
 
   def delete_gists(ids)
-    client = auth
+    @client ||= auth
     threads = []
     ids.each do |id|
       threads << Thread.new do
-        client.gists.delete id rescue Github::Error::NotFound
+        @client.gists.delete id rescue Github::Error::NotFound
       end
     end
     threads.map{|t| t.value} # waiting for threads
@@ -141,6 +170,11 @@ class Social::Networks::Github < Social::Network
 
 
   private
+
+  def rename_gist_file_if_name_is_default(name)
+    name = name.sub(/gistfile/, 'default')
+    name
+  end
 
   def auth
     Github.new :oauth_token => token

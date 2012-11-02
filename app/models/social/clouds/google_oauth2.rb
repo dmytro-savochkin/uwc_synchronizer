@@ -11,64 +11,76 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
 
 
   def get_gists
-    client = auth
-    root = client.root_collection
-    folder = root.subcollection_by_title(gists_folder)
-    return {} if folder.nil?
+    @client ||= auth
+    @root ||= @client.root_collection
+    threads = []
 
     gists = {}
 
-    gist_files = folder.files("showdeleted" => false)
+    gist_files = get_gists_folder.files("showdeleted" => false)
     gist_files.each do |file|
       begin
-        gist_data = JSON.parse(file.download_to_string, :symbolize_names => true)
-        gists[gist_data[:id].to_s] = gist_data
+        threads << Thread.new do
+          gist_data = JSON.parse(file.download_to_string, :symbolize_names => true)
+          gists[gist_data[:id].to_s] = gist_data
+        end
       rescue JSON::ParserError
         nil
       end
     end
 
+    threads.map{|t| t.value}
     gists
   end
 
   def put_gists(gists)
-    client = auth
-    root = client.root_collection
-    folder = root.subcollection_by_title(gists_folder) || root.create_subcollection(gists_folder)
+    @client ||= auth
+    @root ||= @client.root_collection
+    threads = []
+    folder = get_gists_folder
 
     gists.each do |gist|
       file_name = create_gist_name(gist[:id])
+      threads << Thread.new do
 
-      # this is stupid solution, yes, but i cant provide another because of
-      # error in google drive gem (or google drive itself) which results in
-      # impossibility of updating existing files
-      file = folder.files(:title => file_name, "title-exact" => true, :showdeleted => false).first
+        # this is stupid solution, yes, but i cant provide another because of
+        # error in google drive gem (or google drive itself) which results in
+        # impossibility of updating existing files
+        file = folder.files(:title => file_name, "title-exact" => true, :showdeleted => false).first
 
-      logger.info '123312313'
-      logger.info file.to_yaml
-      unless file.nil?
-        logger.info 'not nil'
-        folder.remove(file)
+        logger.info '123312313'
+        logger.info file.to_yaml
+        unless file.nil?
+          logger.info 'not nil'
+          folder.remove(file)
+        end
+        logger.info '123312313'
+        file = @client.upload_from_string(gist.to_json, file_name, :content_type => "text/plain", :convert => false)
+        folder.add(file)
+        @root.remove(file)
+
       end
-      logger.info '123312313'
-      file = client.upload_from_string(gist.to_json, file_name, :content_type => "text/plain", :convert => false)
-      folder.add(file)
-      root.remove(file)
     end
+    threads.map{|t| t.value}
   end
 
   def delete_gists(ids)
-    client = auth
-    root = client.root_collection
-    folder = root.subcollection_by_title(gists_folder) || root.create_subcollection(gists_folder)
+    @client ||= auth
+    @root ||= @client.root_collection
+    threads = []
 
     ids.each do |id|
       begin
         file_name = create_gist_name(id)
-        file = folder.files("title" => file_name, "title-exact" => true).first
-        file.delete true
+        threads << Thread.new do
+          file = get_gists_folder.files("title" => file_name, "title-exact" => true).first
+          file.delete true
+        end
       end
     end
+
+
+    threads.map{|t| t.value}
   end
 
 
@@ -77,6 +89,18 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
 
 
   private
+
+  def get_gists_folder
+    @client ||= auth
+    @root ||= @client.root_collection
+
+    dir = @root
+    gists_folder.split('/').each do |folder|
+      dir = dir.subcollection_by_title(folder) || dir.create_subcollection(folder)
+    end
+    dir
+  end
+
 
   def auth
     client = OAuth2::Client.new(
