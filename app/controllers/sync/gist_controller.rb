@@ -51,6 +51,12 @@ class Sync::GistController < ApplicationController
     flash[:success] = "Files were successfully stored in the cloud"
   rescue Dropbox::API::Error
     dropbox_api_error_flash_message
+  rescue OAuth2::Error => e
+    if e.message.include? 'limit exceeded'
+      flash[:error] = "Rate limit exceeded. Please try again later or lower your gist count."
+    else
+      raise e
+    end
   #rescue Exception => e
   #  flash[:error] = "Some error occurred: " + e.to_s
   ensure
@@ -78,8 +84,6 @@ class Sync::GistController < ApplicationController
   end
 
   def fill_gists_instance(gists, storage)
-    logger.info storage
-    logger.info gists.to_yaml
     gists.each do |key, gist|
       @gists[gist[:id]] ||= {}
       @gists[gist[:id]][storage] = gist

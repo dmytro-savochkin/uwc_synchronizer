@@ -6,67 +6,77 @@
 
 %h3 Sync your Github gists into #{@user.preferred_cloud.human_name} and back
 
-Please specify from which source would you like to get gists data to be synced
-with #{@user.preferred_cloud.human_name} and Github.
-
 %div
-  %table.table
-    %thead
-      %tr.centered
-        %th.span2
-          exclude
-          %br
-          from sync
-          %br
-          %button.btn.btn-mini.enable-radio-buttons#nothing choose all
-        %th.span4
-          sync it
-          %br
-          from #{@user.preferred_cloud.human_name}
-          %br
-          %button.btn.btn-mini.enable-radio-buttons#cloud choose all
-        %th.span4
-          sync it
-          %br
-          from Github
-          %br
-          %button.btn.btn-mini.enable-radio-buttons#github choose all
-        %th.span2
-          delete
-          %br
-          gist from
-          %br
-          everywhere
+  - if @gists.empty?
+    %div
+      It seems like you don't have any gists neither in Github nor in
+      #{@user.preferred_cloud.human_name}.
+      %br
+      Maybe it's time to create first?
 
 
-    %tbody
 
-      = form_tag sync_upload_gist_path, :method => :post do
-        - @gists.each do |gist_id, gist|
-          - github_gist = gist[:github]
-          - cloud_gist = gist[:cloud]
-          - equal = are_equal? github_gist, cloud_gist
+  - else
+    Please specify from which source would you like to get gists data to be synced
+    with #{@user.preferred_cloud.human_name} and Github.
 
-          - gist_radio_button_name = gist_radio_button_name(gist_id)
+    %table.table
+      %thead
+        %tr.centered
+          %th.span2
+            exclude
+            %br
+            from sync
+            %br
+            %button.btn.btn-mini.enable-radio-buttons#nothing choose all
+          %th.span4
+            sync it
+            %br
+            from #{@user.preferred_cloud.human_name}
+            %br
+            %button.btn.btn-mini.enable-radio-buttons#cloud choose all
+          %th.span4
+            sync it
+            %br
+            from Github
+            %br
+            %button.btn.btn-mini.enable-radio-buttons#github choose all
+          %th.span2
+            delete
+            %br
+            gist from
+            %br
+            everywhere
 
-          %tr{:class => (equal ? 'success' : 'warning')}
-            %td
-              %div.btn-container= radio_button_tag gist_radio_button_name, 'nothing', true
 
-            %td
-              - unless cloud_gist.nil?
-                %div.btn-container= radio_button_tag gist_radio_button_name, 'cloud'
-                = render 'layouts/gist', :gist => cloud_gist, :gist_id => gist_id, :storage => 'cloud'
+      %tbody
 
-            %td
-              - unless github_gist.nil?
-                %div.btn-container
-                  = radio_button_tag gist_radio_button_name, 'github'
-                = render 'layouts/gist', :gist => github_gist, :gist_id => gist_id, :storage => 'github'
+        = form_tag sync_upload_gist_path, :method => :post do
+          - @gists.each do |gist_id, gist|
+            - github_gist = gist[:github]
+            - cloud_gist = gist[:cloud]
+            - equal = are_equal? github_gist, cloud_gist
 
-            %td
-              %div.btn-container= radio_button_tag gist_radio_button_name, 'delete'
+            - gist_radio_button_name = gist_radio_button_name(gist_id)
 
-        %tr
-          %td{:colspan => 3}
-            = submit_tag 'Sync!', :class => 'btn', :id => 'sync-gists-button'
+            %tr{:class => (equal ? 'success' : 'warning')}
+              %td
+                %div.btn-container= radio_button_tag gist_radio_button_name, 'nothing', true
+
+              %td
+                - unless cloud_gist.nil?
+                  %div.btn-container= radio_button_tag gist_radio_button_name, 'cloud'
+                  = render 'layouts/gist', :gist => cloud_gist, :gist_id => gist_id, :storage => 'cloud'
+
+              %td
+                - unless github_gist.nil?
+                  %div.btn-container
+                    = radio_button_tag gist_radio_button_name, 'github'
+                  = render 'layouts/gist', :gist => github_gist, :gist_id => gist_id, :storage => 'github'
+
+              %td
+                %div.btn-container= radio_button_tag gist_radio_button_name, 'delete'
+
+          %tr
+            %td{:colspan => 3}
+              = submit_tag 'Sync!', :class => 'btn', :id => 'sync-gists-button'

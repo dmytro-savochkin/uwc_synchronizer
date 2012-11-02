@@ -52,6 +52,10 @@ class Social::Clouds::Dropbox < Social::Cloud
     ids.each do |id|
       begin
         file = @client.find gists_folder + '/' + create_gist_name(id)
+
+        logger.info 'deleting dropbox file'
+        logger.info file.to_yaml
+
         file.destroy
       rescue Dropbox::API::Error::NotFound
         nil

@@ -68,7 +68,7 @@ class Social::Networks::Github < Social::Network
         }
 
         threads << Thread.new do
-          url = file.last.raw_url.tr(' ', "20")
+          url = file.last.raw_url.split('/')[0...-1].join('/').to_s
           gists[gist.id][:files][index][:contents] = httpclient.get_content(url).to_s
         end
       end

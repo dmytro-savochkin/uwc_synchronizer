@@ -48,13 +48,11 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
         # impossibility of updating existing files
         file = folder.files(:title => file_name, "title-exact" => true, :showdeleted => false).first
 
-        logger.info '123312313'
         logger.info file.to_yaml
+
         unless file.nil?
-          logger.info 'not nil'
           folder.remove(file)
         end
-        logger.info '123312313'
         file = @client.upload_from_string(gist.to_json, file_name, :content_type => "text/plain", :convert => false)
         folder.add(file)
         @root.remove(file)
@@ -74,7 +72,7 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
         file_name = create_gist_name(id)
         threads << Thread.new do
           file = get_gists_folder.files("title" => file_name, "title-exact" => true).first
-          file.delete true
+          file.delete true if file
         end
       end
     end
