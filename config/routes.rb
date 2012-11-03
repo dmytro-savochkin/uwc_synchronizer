@@ -12,7 +12,10 @@ Uwcplus::Application.routes.draw do
 
   match 'sync' => 'sync/welcome#index'
   namespace :sync do
-    #resource :profile, :only => %w(edit update)
+    match 'edit_avatar' => 'avatar#edit'
+    match 'update_avatar' => 'avatar#update'
+    match 'approve_avatar' => 'avatar#approve'
+
     match 'edit_profile' => 'profile#edit'
     match 'update_profile' => 'profile#update'
 
@@ -20,8 +23,6 @@ Uwcplus::Application.routes.draw do
 
     match 'show_gists' => 'gist#show'
     match 'upload_gist' => 'gist#upload'
-
-    #resources :avatar, :only => %w(edit update)
   end
 
   root :to => 'sync/welcome#index'

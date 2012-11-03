@@ -36,6 +36,7 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-linkedin'
 gem 'omniauth-github'
+gem 'omniauth-vkontakte'
 
 gem 'omniauth-google-oauth2'
 gem 'omniauth-dropbox'
@@ -46,6 +47,7 @@ gem 'twitter'
 gem 'koala'
 gem "github_api"
 gem 'linkedin'
+gem 'vkontakte_api', '~> 1.0'
 
 gem 'google_drive'
 gem 'dropbox-api'

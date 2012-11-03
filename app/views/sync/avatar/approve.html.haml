@@ -1,0 +1,19 @@
+- content_for :title do
+  Avatar synchronization
+
+
+%div= link_to 'back', sync_edit_avatar_path
+
+%h2 Avatar approving
+
+We uploaded some files to your linked social networks and cloud.
+But now due to the limitations of social networks' API you have to approve manually your avatar syncing
+
+
+- @redirects.each do |storage, response|
+  %ul
+    - approving_url = response[:redirect]
+    - if approving_url
+      %li= link_to 'Approve ' + storage.to_s.capitalize, approving_url, :target => '_blank'
+
+Then please #{link_to 'return', sync_edit_avatar_path}.

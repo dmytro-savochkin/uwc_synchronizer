@@ -1,5 +1,7 @@
 # encoding: utf-8
 class User < ActiveRecord::Base
+  has_one :avatar
+
   has_many :clouds, :class_name => Social::Cloud, :foreign_key => :user_id
   has_one :preferred_cloud, :class_name => Social::Cloud, :foreign_key => :primary_for
 

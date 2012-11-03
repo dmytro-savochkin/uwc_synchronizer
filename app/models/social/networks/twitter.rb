@@ -11,19 +11,48 @@ class Social::Networks::Twitter < Social::Network
   def profile_editable
     true
   end
-
   def profile_updatable
+    true
+  end
+  def avatar_updatable
     true
   end
 
 
 
+  def get_avatar
+    @client ||= auth
+    httpclient = HTTPClient.new
+    avatar_url = @client.user[:attrs][:profile_image_url].to_s.gsub(/_normal/, '')
+    httpclient.get_content(avatar_url).to_s
+  end
+
+  def post_avatar(data)
+    @client ||= auth
+    file = create_temp_avatar_file(data)
+
+
+    logger.info '11111111111111111111111111111111'
+    logger.info '11111111111111111111111111111111'
+    logger.info '11111111111111111111111111111111'
+    logger.info '11111111111111111111111111111111'
+    logger.info '11111111111111111111111111111111'
+    logger.info '11111111111111111111111111111111'
+
+    @client.update_profile_image file
+    file.close
+    File.delete file.path
+    {}
+  end
+
+
+
+
+
+
   def get_info
-    client = Twitter::Client.new(
-        :oauth_token => token,
-        :oauth_token_secret => secret
-    )
-    data = client.user
+    @client ||= auth
+    data = @client.user
     {
         provider: self.class_name_without_module,
         name: data.attrs[:name],
@@ -35,10 +64,18 @@ class Social::Networks::Twitter < Social::Network
 
 
   def put_info(params)
-    client = Twitter::Client.new(
+    @client ||= auth
+    @client.update_profile(params.reject{|key, v| key.to_s == 'provider'})
+  end
+
+
+
+  private
+
+  def auth
+    Twitter::Client.new(
         :oauth_token => token,
         :oauth_token_secret => secret
     )
-    client.update_profile(params.reject{|key, v| key.to_s == 'provider'})
   end
 end

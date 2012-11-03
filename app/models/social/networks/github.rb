@@ -17,6 +17,9 @@ class Social::Networks::Github < Social::Network
     true
   end
 
+  def avatar_updatable
+    false
+  end
 
 
 

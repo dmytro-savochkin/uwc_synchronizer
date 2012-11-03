@@ -5,6 +5,9 @@
       <w>gists</w>
       <w>github</w>
       <w>linkedin</w>
+      <w>omniauth</w>
+      <w>storages</w>
+      <w>vkontakte</w>
     </words>
   </dictionary>
 </component>

@@ -10,7 +10,8 @@ class Social::Network < ActiveRecord::Base
 
 
   def self.kids
-    %w(Social::Networks::Facebook Social::Networks::Twitter Social::Networks::Linkedin Social::Networks::Github)
+    %w(Social::Networks::Facebook Social::Networks::Twitter Social::Networks::Linkedin
+    Social::Networks::Github Social::Networks::Vkontakte)
   end
 
 
@@ -54,5 +55,17 @@ class Social::Network < ActiveRecord::Base
 
   def class_name_without_module
     self.class.name.to_s.split('::').last || ''
+  end
+
+
+
+  protected
+
+  def create_temp_avatar_file(data)
+    file_name = './public/assets/images/avatars/' + rand(1000000).to_s + '.jpg'
+    File.open(file_name, 'wb') do |f|
+      f.write data
+    end
+    File.open(file_name, 'rb')
   end
 end

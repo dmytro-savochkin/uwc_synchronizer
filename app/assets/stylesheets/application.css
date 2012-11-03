@@ -5,7 +5,7 @@
 
 
 
-td, tr.centered th {
+td, tr.centered td, tr.centered th {
     vertical-align: top;
     text-align: center;
 }

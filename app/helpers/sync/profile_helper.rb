@@ -1,2 +1,0 @@
-module Sync::ProfileHelper
-end

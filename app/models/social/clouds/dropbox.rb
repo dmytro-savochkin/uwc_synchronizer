@@ -5,6 +5,40 @@ class Social::Clouds::Dropbox < Social::Cloud
   def gists_folder
     'SocialSync/gists'
   end
+  def avatar_folder
+    'SocialSync/avatar'
+  end
+  def avatar_file_name
+    'avatar.jpg'
+  end
+
+
+
+
+
+  def get_avatar
+    @client ||= auth
+    @client.find(avatar_folder + '/' + avatar_file_name).download
+  rescue Dropbox::API::Error::NotFound
+    nil
+  end
+
+  def post_avatar(data)
+    @client ||= auth
+    begin
+      @client.mkdir(avatar_folder)
+    rescue Dropbox::API::Error::Forbidden
+      nil
+    end
+    @client.upload(avatar_folder + '/' + avatar_file_name, data)
+    {}
+  end
+
+
+
+
+
+
 
 
 

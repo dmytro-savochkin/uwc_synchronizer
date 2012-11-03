@@ -11,15 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121030155333) do
+ActiveRecord::Schema.define(:version => 20121103153701) do
+
+  create_table "avatars", :force => true do |t|
+    t.binary  "facebook"
+    t.binary  "twitter"
+    t.binary  "cloud"
+    t.integer "user_id"
+  end
 
   create_table "clouds", :force => true do |t|
     t.integer  "user_id"
     t.string   "email"
-    t.string   "picture_file_name"
+    t.binary   "picture_data",  :limit => 255
     t.string   "provider"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.string   "token"
     t.string   "secret"
     t.integer  "primary_for"

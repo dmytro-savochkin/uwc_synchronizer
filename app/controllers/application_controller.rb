@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper_method :current_user
 
+  rescue_from Twitter::Error::TooManyRequests, :with => :twitter_limit_exceeded
 
 
   def not_found
@@ -21,6 +22,10 @@ class ApplicationController < ActionController::Base
     'Social::Clouds::' + provider.camelize rescue NameError
   end
 
+  def twitter_limit_exceeded
+    flash[:error] = 'Twitter API limit exceeded. Please wait some time and then try again.'
+    redirect_to sync_path
+  end
 
 
   private

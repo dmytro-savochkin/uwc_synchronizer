@@ -5,6 +5,43 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
   def gists_folder
     'SocialSync/gists'
   end
+  def avatar_folder
+    'SocialSync/avatar'
+  end
+  def avatar_file_name
+    'avatar.jpg'
+  end
+
+
+
+  def get_avatar
+    @client ||= auth
+    get_folder(avatar_folder).
+        files("title" => avatar_file_name, "title-exact" => true).
+        first.
+        download_to_string
+  rescue NoMethodError
+    nil
+  end
+
+  def post_avatar(data)
+    @client ||= auth
+    @root ||= @client.root_collection
+    folder = get_folder avatar_folder
+    file = folder.files(:title => avatar_file_name, "title-exact" => true, :showdeleted => false).first
+
+    if file
+      folder.remove(file)
+    end
+
+    file = @client.upload_from_string(data, avatar_file_name, :content_type => "text/jpeg", :convert => false)
+    folder.add(file)
+    @root.remove(file)
+  end
+
+
+
+
 
 
 
@@ -17,7 +54,7 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
 
     gists = {}
 
-    gist_files = get_gists_folder.files("showdeleted" => false)
+    gist_files = get_folder(gists_folder).files("showdeleted" => false)
     gist_files.each do |file|
       begin
         threads << Thread.new do
@@ -37,7 +74,7 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
     @client ||= auth
     @root ||= @client.root_collection
     threads = []
-    folder = get_gists_folder
+    folder = get_folder gists_folder
 
     gists.each do |gist|
       file_name = create_gist_name(gist[:id])
@@ -47,8 +84,6 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
         # error in google drive gem (or google drive itself) which results in
         # impossibility of updating existing files
         file = folder.files(:title => file_name, "title-exact" => true, :showdeleted => false).first
-
-        logger.info file.to_yaml
 
         unless file.nil?
           folder.remove(file)
@@ -71,7 +106,7 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
       begin
         file_name = create_gist_name(id)
         threads << Thread.new do
-          file = get_gists_folder.files("title" => file_name, "title-exact" => true).first
+          file = get_folder(gists_folder).files("title" => file_name, "title-exact" => true).first
           file.delete true if file
         end
       end
@@ -88,12 +123,12 @@ class Social::Clouds::GoogleOauth2 < Social::Cloud
 
   private
 
-  def get_gists_folder
+  def get_folder(folder_path)
     @client ||= auth
     @root ||= @client.root_collection
 
     dir = @root
-    gists_folder.split('/').each do |folder|
+    folder_path.split('/').each do |folder|
       dir = dir.subcollection_by_title(folder) || dir.create_subcollection(folder)
     end
     dir

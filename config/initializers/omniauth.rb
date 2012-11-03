@@ -5,9 +5,10 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
   #provider :developer unless Rails.env.production?
   provider :twitter, Uwcplus::Application::TWITTER_API[:token], Uwcplus::Application::TWITTER_API[:secret]
-  provider :facebook, Uwcplus::Application::FACEBOOK_API[:token], Uwcplus::Application::FACEBOOK_API[:secret], :scope => 'user_website,email,user_about_me'
+  provider :facebook, Uwcplus::Application::FACEBOOK_API[:token], Uwcplus::Application::FACEBOOK_API[:secret], :scope => 'user_website,email,user_about_me,user_photos,publish_stream'
   provider :linkedin, Uwcplus::Application::LINKEDIN_API[:token], Uwcplus::Application::LINKEDIN_API[:secret]
   provider :github, Uwcplus::Application::GITHUB_API[:token], Uwcplus::Application::GITHUB_API[:secret], :scope => 'user,gist'
+  provider :vkontakte, Uwcplus::Application::VKONTAKTE_API[:token], Uwcplus::Application::VKONTAKTE_API[:secret], :scope => 'photos'
 
   provider :dropbox, Uwcplus::Application::DROPBOX_API[:token], Uwcplus::Application::DROPBOX_API[:secret]
   provider :google_oauth2, Uwcplus::Application::GOOGLE_API[:token], Uwcplus::Application::GOOGLE_API[:secret],
@@ -33,3 +34,7 @@ Dropbox::API::Config.app_secret = Uwcplus::Application::DROPBOX_API[:secret]
 Dropbox::API::Config.mode       = "dropbox"
 
 
+VkontakteApi.configure do |config|
+  config.app_id       = Uwcplus::Application::VKONTAKTE_API[:token]
+  config.app_secret   = Uwcplus::Application::VKONTAKTE_API[:secret]
+end

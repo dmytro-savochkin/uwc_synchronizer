@@ -71,15 +71,17 @@
           %tbody
             %tr
               %td.span4
-                = link_to 'Sync your avatar with social networks.', '1'
-
+                - if @user.preferred_cloud  and @user.social_networks.select(&:avatar_updatable).count >= 2
+                  = link_to 'Sync your avatar with social networks.', sync_edit_avatar_path
+                - else
+                  To sync your avatars you have to link Facebook, Twitter and some cloud.
               %td.span4
                 - if @user.preferred_cloud and @user.social_networks.map(&:class).include? Social::Networks::Github
                   = link_to 'Sync your github gists with clouds.', sync_show_gists_path
                 - else
                   To download your gists to the cloud you should have linked Github and some cloud system.
               %td.span4
-                - if @user.social_networks.count >= 2 and  @user.social_networks.select(&:profile_updatable).count >= 1
+                - if @user.social_networks.count >= 2 and @user.social_networks.select(&:profile_updatable).count >= 1
                   = link_to 'Sync your profile data.', sync_edit_profile_path
                 - else
                   To sync your profile data you have to link at least 1 API-updatable

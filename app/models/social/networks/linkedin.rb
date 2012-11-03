@@ -14,7 +14,9 @@ class Social::Networks::Linkedin < Social::Network
   def profile_updatable
     false
   end
-
+  def avatar_updatable
+    false
+  end
 
 
 
