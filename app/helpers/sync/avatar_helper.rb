@@ -1,0 +1,2 @@
+module Sync::AvatarHelper
+end

@@ -1,0 +1,31 @@
+- content_for :title do
+  Avatar synchronization
+
+
+%div= link_to 'back', root_path
+
+%h3 Sync your avatars through social networks and clouds
+
+- order = [:cloud, :facebook, :twitter]
+
+%table.table
+  %thead
+    %tr.centered
+      - order.each do |storage|
+        %th.span3
+          - if storage == :cloud
+            = @user.preferred_cloud.human_name
+          - else
+            = storage.capitalize
+
+    %tr.centered
+      - order.each do |storage|
+        %td
+          - if @avatars[:links][storage]
+            = form_tag sync_update_avatar_path, :method => :post do
+              = hidden_field_tag :links, @avatars[:links].to_json
+              = hidden_field_tag :from, storage
+              = submit_tag 'set'
+
+            - avatar_path = @avatars[:links][storage].split('/').drop(3).join('/')
+            = image_tag avatar_path, :size => "200x200"
