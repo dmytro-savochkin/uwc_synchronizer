@@ -9,10 +9,10 @@ end
 group :production do
   gem 'pg'
 
-  gem 'therubyracer'
-  gem 'sass-rails'
-  gem 'coffee-rails'
-  gem 'uglifier'
+  #gem 'therubyracer'
+  #gem 'sass-rails'
+  #gem 'coffee-rails'
+  #gem 'uglifier'
 end
 
 
