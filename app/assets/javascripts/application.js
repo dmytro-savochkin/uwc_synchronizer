@@ -36,8 +36,8 @@ $(function() {
         var failed = false;
 
         for(var i = 0; i < textareas.length; i++) {
-            var textarea = $(textareas[i])
-            if(textarea.val() == '') {
+            var textarea = $(textareas[i]);
+            if(/^\s*$/.test(textarea.val())) {
                 textarea.addClass('textarea-error');
                 failed = true;
             }

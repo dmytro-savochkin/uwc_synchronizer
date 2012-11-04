@@ -1,48 +1,24 @@
 class Sync::AvatarController < ApplicationController
-
-
   def edit
     @user = current_user
     @avatars = {:data => {}, :links => {}}
     session[:avatar_redirects] = nil
 
-    storages = get_storages
-    binary_avatars = {}
-    binary_avatars[:cloud] = storages[:cloud].get_avatar
+    get_storages.each do |storage_name, storage|
+      avatar_data = storage.get_avatar
 
-    if binary_avatars[:cloud]
-      cloud_avatar_was_changed = binary_avatars[:cloud] != storages[:cloud].picture_data
-
-      storages[:cloud].picture_data = binary_avatars[:cloud]
-      storages[:cloud].save
-
-      if cloud_avatar_was_changed
-        responses = {}
-        responses[:twitter] = storages[:twitter].post_avatar binary_avatars[:cloud]
-        responses[:facebook] = storages[:facebook].post_avatar binary_avatars[:cloud]
-        make_redirect_if_need_to_approve(responses)
-      end
-    end
-
-
-    binary_avatars[:twitter] = storages[:twitter].get_avatar
-    binary_avatars[:facebook] = storages[:facebook].get_avatar
-
-    binary_avatars.each do |storage, avatar_data|
-      unless avatar_data.nil?
-        avatar_path = './public/assets/images/avatars/'+ @user.id.to_s + storage.to_s  + Digest::MD5.hexdigest(avatar_data) + '.jpg'
-        File.open(avatar_path, 'wb') do |f|
-          f.write(avatar_data)
-        end
-
+      if avatar_data
         @user.avatar ||= Avatar.new
-        @user.avatar[storage] = avatar_data
+        avatar_path = @user.avatar.save_response_as_file storage_name, avatar_data
 
-        @avatars[:links][storage] = avatar_path
-        @avatars[storage] = avatar_path
+        logger.info storage_name
+        logger.info avatar_path
+
+        @avatars[:links][storage_name] = avatar_path
+        @avatars[storage_name] = avatar_path
+        @user.avatar.save
       end
     end
-    @user.avatar.save
   end
 
 
@@ -50,15 +26,18 @@ class Sync::AvatarController < ApplicationController
   def update
     storages = get_storages
     responses = {}
-    storages.reject{|k,s|params[:from] == k.to_s}.each do |storage_name, storage|
+    storages_without_selected = storages.reject{|k,s| params[:from] == k.to_s}
+
+    logger.info storages_without_selected
+
+    storages_without_selected.each do |storage_name, storage|
       responses[storage_name] = storage.post_avatar(current_user.avatar[params[:from]])
+      logger.info responses[storage_name]
     end
 
-    links = JSON.parse(params[:links])
-    links.each do |link_array|
-      link = link_array.last
-      File.delete link if File.exist? link
-    end
+    Avatar.delete_temp_avatars params[:links]
+
+    let_them_process
 
     make_redirect_if_need_to_approve(responses)
   #rescue Exception => e
@@ -79,6 +58,10 @@ class Sync::AvatarController < ApplicationController
 
 
   private
+
+  def let_them_process
+    sleep 3 # let Twitter and others update our avatars :)
+  end
 
   def make_redirect_if_need_to_approve(responses)
     if responses.any?{|response| response.last[:redirect]}

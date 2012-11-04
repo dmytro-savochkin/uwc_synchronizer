@@ -8,6 +8,17 @@ class Social::Network < ActiveRecord::Base
                   :token, :secret
 
 
+  def profile_editable
+    false
+  end
+  def profile_updatable
+    false
+  end
+  def avatar_updatable
+    false
+  end
+
+
 
   def self.kids
     %w(Social::Networks::Facebook Social::Networks::Twitter Social::Networks::Linkedin

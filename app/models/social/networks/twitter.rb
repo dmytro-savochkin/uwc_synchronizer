@@ -30,15 +30,6 @@ class Social::Networks::Twitter < Social::Network
   def post_avatar(data)
     @client ||= auth
     file = create_temp_avatar_file(data)
-
-
-    logger.info '11111111111111111111111111111111'
-    logger.info '11111111111111111111111111111111'
-    logger.info '11111111111111111111111111111111'
-    logger.info '11111111111111111111111111111111'
-    logger.info '11111111111111111111111111111111'
-    logger.info '11111111111111111111111111111111'
-
     @client.update_profile_image file
     file.close
     File.delete file.path
