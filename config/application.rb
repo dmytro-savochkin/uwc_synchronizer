@@ -12,14 +12,15 @@ end
 module Uwcplus
   class Application < Rails::Application
 
-    FACEBOOK_API = {:token => "215305611933443", :secret => "0e6c8039f9fdccad79f8cd4872af052f"}
-    LINKEDIN_API = {:token => "if1e5eo991ru", :secret => "eZKIBNnmoDhMUTXt"}
-    VKONTAKTE_API = {:token => "3175222", :secret => "8XHtp6aIrcdlEEGbxzdL"}
-    TWITTER_API = {:token => "NEyPya21yA9Cj36YAlXNg", :secret => "Lt0ciRDxMFqnqEgm4bH7P8yXdU7awF8z5OU1uVvAGl4"}
-    GITHUB_API = {:token => "469b0707e99cb1be93cd", :secret => "c8d17a473d42d1c438235179fb5c77869d00322c"}
+    FACEBOOK_API = {:token => "296392173798471", :secret => "0af9a932b5aa9fd2829f4e4a241b982e"}
+    VKONTAKTE_API = {:token => "3216855", :secret => "rAxzYrruwwN5pkjX1oRn"}
 
-    DROPBOX_API = {:token => "ou771rjh0ytd16h", :secret => "9apfd0pe1ol9zgk"}
-    GOOGLE_API = {:token => "227399176915.apps.googleusercontent.com", :secret => "ypw_Fx0x8DTFVcPPYyEBz0X-"}
+    LINKEDIN_API = {:token => "p57ga370woqx", :secret => "SlaQiUYqCQa0egtN"}
+    TWITTER_API = {:token => "kLTBjcx6a2iYc89tuA5OPA", :secret => "2ghAfbabpKlhUHXhpuTh3SMnnRTYwdbrr4wqR9kafg"}
+    GITHUB_API = {:token => "e46c3d4bed003f151f43", :secret => "64e21a543d8e6e5c5eb1762c04bea9cd3b5f08e5"}
+
+    DROPBOX_API = {:token => "juyfneyjdfvjzmr", :secret => "eia2vk7wvno1bb0"}
+    GOOGLE_API = {:token => "108633948545.apps.googleusercontent.com", :secret => "hE2BeYmHagFifYxaAnPsltxj"}
 
 
 
