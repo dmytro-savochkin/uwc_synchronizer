@@ -13,11 +13,13 @@ class Sync::ProfileController < ApplicationController
       flash[:success] =
           'You have updated your profile on ' +
           networks_to_update.map(&:class_name_without_module).join(', ')
+      redirect_to sync_path
     elsif networks_to_update.empty?
       flash[:error] = 'Nothing to update'
+      redirect_to sync_edit_profile_path
     else
       flash[:error] = 'Some error occured'
+      redirect_to sync_edit_profile_path
     end
-    redirect_to sync_edit_profile_path
   end
 end
