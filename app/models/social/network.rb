@@ -42,8 +42,7 @@ class Social::Network < ActiveRecord::Base
     if network
       false
     else
-      self.create(
-          name:auth.info.name,
+      data = {name:auth.info.name,
           nickname:auth.info.nickname,
           provider:provider,
           uid:auth.uid,
@@ -51,8 +50,9 @@ class Social::Network < ActiveRecord::Base
           email: email,
           user_id: current_user.id,
           token: auth.credentials.token,
-          secret: auth.credentials.secret
-      )
+          secret: auth.credentials.secret }
+      logger.info data
+      self.create data
     end
   end
 
