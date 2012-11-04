@@ -48,14 +48,3 @@
                   %div Your preferred cloud:
                   %div.preferred_cloud_form
                     = render 'layouts/preferred_cloud_form'
-
-
-
-      .row-fluid
-        %br
-        %br
-        %br
-        %br
-        - if Rails.env.development?
-          %pre= debug(params)
-          %pre= session.to_yaml unless session.nil?

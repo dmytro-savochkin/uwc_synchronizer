@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121103204052) do
+ActiveRecord::Schema.define(:version => 20121104123954) do
 
   create_table "avatars", :force => true do |t|
     t.binary  "facebook"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20121103204052) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "provider"
-    t.integer  "uid"
+    t.string   "uid"
     t.string   "token"
     t.string   "secret"
   end
