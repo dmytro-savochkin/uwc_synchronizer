@@ -14,12 +14,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def factory(provider)
-    self.class_name_from_provider(provider).constantize
-  end
-
-  def class_name_from_provider(provider)
-    return 'Social::Networks::' + provider.camelize rescue NameError
-    'Social::Clouds::' + provider.camelize rescue NameError
+    ('Social::Networks::' + provider.camelize).constantize
+  rescue NameError
+    ('Social::Clouds::' + provider.camelize).constantize
   end
 
   def twitter_limit_exceeded
