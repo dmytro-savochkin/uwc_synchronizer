@@ -100,7 +100,8 @@ class Social::Networks::Github < Social::Network
 
       old_gist = @client.gists.get gist[:id] rescue Github::Error::NotFound
 
-      if old_gist
+
+      if old_gist and old_gist.user and uid.to_s == old_gist.user.id.to_s
         old_files = old_gist[:files].keys
         new_files = gist['files'].values.map{|f| f[:filename]}
         files_to_delete = old_files - new_files
