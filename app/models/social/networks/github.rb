@@ -88,7 +88,6 @@ class Social::Networks::Github < Social::Network
 
     ids_to_change_in_cloud_query = {}
     threads = []
-    logger.info 'GITHUB'
     gists.each do |gist|
       data_to_send = {}
       data_to_send[:description] = gist[:description]
@@ -99,52 +98,27 @@ class Social::Networks::Github < Social::Network
         data_to_send[:files][filename] = {:content => file[:contents].to_s}
       end
 
-
-
       old_gist = @client.gists.get gist[:id] rescue Github::Error::NotFound
 
       if old_gist
         old_files = old_gist[:files].keys
         new_files = gist['files'].values.map{|f| f[:filename]}
         files_to_delete = old_files - new_files
-        logger.info 'old_gist'
-        logger.info old_files.to_yaml
-        logger.info new_files.to_yaml
-        logger.info files_to_delete.to_yaml
 
         files_to_delete.each do |file_to_delete|
           data_to_send[:files][file_to_delete] = 'null'
         end
 
-        logger.info data_to_send.to_yaml
-
         threads << Thread.new do
           @client.gists.edit gist[:id], data_to_send
         end
       else
-        logger.info 'new thread'
-        logger.info data_to_send.to_yaml
         threads << Thread.new do
           new_gist = @client.gists.create data_to_send
           ids_to_change_in_cloud_query[gist[:id]] = new_gist[:id]
         end
       end
-
-      #if gist[:recreate]
-        #logger.info 'recreate!'
-        #threads << Thread.new do
-        #  client.gists.delete gist[:id] rescue Github::Error::NotFound
-        #  new_gist = client.gists.create data_to_send
-        #  ids_to_change_in_cloud_query[gist[:id]] = new_gist[:id]
-        #end
-      #else
-        #threads << Thread.new do
-        #  client.gists.edit gist[:id], data_to_send
-        #end
-      #end
     end
-
-    logger.info 'GITHUB'
 
     threads.map{|t| t.value} # waiting for threads
 

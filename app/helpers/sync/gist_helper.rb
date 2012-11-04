@@ -17,35 +17,6 @@ module Sync::GistHelper
         gist1[:files].values.map{|el| [el[:filename], el[:language], el[:contents]]}.sort.to_s.gsub(/\\r/, "") ==
         gist2[:files].values.map{|el| [el[:filename], el[:language], el[:contents]]}.sort.to_s.gsub(/\\r/, "")
 
-
-    #logger.info "============================"
-    #logger.info "============================"
-    #logger.info "============================"
-    #logger.info gist1[:id]
-    #logger.info gist2[:id]
-    #logger.info gist1[:description]
-    #logger.info gist2[:description]
-    #logger.info "============================"
-
-    # a = [{1:1, 2:2}, {3:3, 4:4}]
-    # b = [{3:3, 4:4}, {1:1, 2:2}]
-    # a.values.sort
-
-
-    #logger.info gist1[:files].values.to_s.gsub(/\\r/, "")
-    #logger.info gist2[:files].values.to_s.gsub(/\\r/, "")
-    #logger.info "============================"
-    #logger.info gist1[:files].values.map{|el| [el[:filename], el[:language], el[:contents]]}.sort.to_s.gsub(/\\r/, "")
-    #logger.info gist2[:files].values.map{|el| [el[:filename], el[:language], el[:contents]]}.sort.to_s.gsub(/\\r/, "")
-    #logger.info "============================"
-    #logger.info ids_equal
-    #logger.info descriptions_equal
-    #logger.info files_equal
-    #logger.info "============================"
-    #logger.info "============================"
-    #logger.info "============================"
-
-
     ids_equal and descriptions_equal and files_equal
   end
 

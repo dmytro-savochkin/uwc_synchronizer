@@ -71,13 +71,10 @@ class Social::Clouds::Dropbox < Social::Cloud
       nil
     end
 
-    logger.info 'DROPBOX'
     gists.each do |gist|
-      logger.info gist.to_yaml
       gist_name = create_gist_name gist[:id]
       @client.upload(gists_folder + '/' + gist_name, gist.to_json)
     end
-    logger.info 'DROPBOX'
   end
 
   def delete_gists(ids)
@@ -86,10 +83,6 @@ class Social::Clouds::Dropbox < Social::Cloud
     ids.each do |id|
       begin
         file = @client.find gists_folder + '/' + create_gist_name(id)
-
-        logger.info 'deleting dropbox file'
-        logger.info file.to_yaml
-
         file.destroy
       rescue Dropbox::API::Error::NotFound
         nil

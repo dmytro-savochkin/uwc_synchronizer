@@ -11,9 +11,6 @@ class Sync::AvatarController < ApplicationController
         @user.avatar ||= Avatar.new
         avatar_path = @user.avatar.save_response_as_file storage_name, avatar_data
 
-        logger.info storage_name
-        logger.info avatar_path
-
         @avatars[:links][storage_name] = avatar_path
         @avatars[storage_name] = avatar_path
         @user.avatar.save
@@ -28,11 +25,8 @@ class Sync::AvatarController < ApplicationController
     responses = {}
     storages_without_selected = storages.reject{|k,s| params[:from] == k.to_s}
 
-    logger.info storages_without_selected
-
     storages_without_selected.each do |storage_name, storage|
       responses[storage_name] = storage.post_avatar(current_user.avatar[params[:from]])
-      logger.info responses[storage_name]
     end
 
     Avatar.delete_temp_avatars params[:links]

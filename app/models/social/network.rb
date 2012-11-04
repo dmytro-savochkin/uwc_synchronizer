@@ -73,7 +73,7 @@ class Social::Network < ActiveRecord::Base
   protected
 
   def create_temp_avatar_file(data)
-    file_name = './public/assets/images/avatars/' + rand(1000000).to_s + '.jpg'
+    file_name = Avatar.path_to_avatars + rand(1000000).to_s + '.jpg'
     File.open(file_name, 'wb') do |f|
       f.write data
     end
